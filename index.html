@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0f19">
+  <title>Chat Wave</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0b0f19;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+    }
+
+    #authScreen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background:
+        radial-gradient(circle at top, #193b70, transparent 45%),
+        #080b12;
+    }
+
+    .auth-box {
+      width: 100%;
+      max-width: 420px;
+      background: rgba(20, 25, 38, 0.95);
+      border: 1px solid #29334a;
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 34px;
+      font-weight: bold;
+      color: #4da3ff;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #9ba7ba;
+      margin-bottom: 25px;
+    }
+
+    .auth-box h2 {
+      margin-bottom: 18px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      border: 1px solid #303b52;
+      background: #111827;
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    input:focus {
+      border-color: #4da3ff;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      background: #258cff;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .primary-btn:active {
+      transform: scale(.98);
+    }
+
+    .secondary-btn {
+      background: transparent;
+      color: #4da3ff;
+      margin-top: 15px;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .forgot-btn {
+      background: transparent;
+      color: #9dbfff;
+      width: 100%;
+      margin: 12px 0;
+    }
+
+    #message {
+      margin-top: 15px;
+      text-align: center;
+      color: #72b7ff;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    #appScreen {
+      min-height: 100vh;
+      background: #0b0f19;
+    }
+
+    .topbar {
+      height: 65px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #111827;
+      border-bottom: 1px solid #273248;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .brand {
+      color: #4da3ff;
+      font-size: 23px;
+      font-weight: bold;
+    }
+
+    .logout {
+      padding: 9px 14px;
+      border-radius: 10px;
+      background: #202a3d;
+      color: #ff8d8d;
+    }
+
+    .home-container {
+      max-width: 700px;
+      margin: auto;
+      padding: 25px 18px;
+    }
+
+    .welcome {
+      margin-bottom: 20px;
+    }
+
+    .welcome h2 {
+      font-size: 25px;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      color: #929db0;
+    }
+
+    .search-box {
+      background: #111827;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid #29334a;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .search-row input {
+      margin: 0;
+      flex: 1;
+    }
+
+    .search-button {
+      padding: 0 18px;
+      border-radius: 12px;
+      background: #258cff;
+      color: white;
+      font-weight: bold;
+    }
+
+    #searchResult {
+      margin-top: 15px;
+    }
+
+    .user-result {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      background: #151d2c;
+      border: 1px solid #29334a;
+      border-radius: 14px;
+    }
+
+    .user-info strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .user-info span {
+      color: #8793a8;
+      font-size: 12px;
+    }
+
+    .chat-button {
+      background: #258cff;
+      color: white;
+      padding: 9px 14px;
+      border-radius: 9px;
+    }
+
+    .error {
+      color: #ff8e8e;
+      text-align: center;
+      padding: 10px;
+    }
+
+    #friendsSection {
+      margin-top: 25px;
+    }
+
+    .section-title {
+      margin-bottom: 12px;
+    }
+
+    .section-title h2 {
+      margin-bottom: 4px;
+      font-size: 20px;
+    }
+
+    .section-title p {
+      color: #929db0;
+      font-size: 13px;
+    }
+
+    .friend-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      margin-top: 10px;
+      border-radius: 14px;
+      background: #151d2c;
+      border: 1px solid #29334a;
+    }
+
+    .friend-avatar {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #258cff;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .friend-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .friend-info strong {
+      display: block;
+    }
+
+    .friend-info span {
+      display: block;
+      margin-top: 4px;
+      color: #8793a8;
+      font-size: 12px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .friend-chat-btn {
+      background: #258cff;
+      color: white;
+      border-radius: 10px;
+      padding: 9px 13px;
+    }
+
+    .empty-friends {
+      padding: 20px;
+      text-align: center;
+      color: #8793a8;
+      border: 1px dashed #29334a;
+      border-radius: 14px;
+    }
+
+    #chatScreen {
+      min-height: 100vh;
+      background: #0b0f19;
+    }
+
+    .chat-topbar {
+      height: 65px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 15px;
+      background: #111827;
+      border-bottom: 1px solid #29334a;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .back-btn {
+      background: #202a3d;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 20px;
+    }
+
+    #chatUsername {
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    #messages {
+      max-width: 750px;
+      margin: auto;
+      padding: 20px 15px 100px;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      display: flex;
+    }
+
+    .message.mine {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 75%;
+      padding: 11px 14px;
+      border-radius: 16px;
+      background: #1a2435;
+      word-wrap: break-word;
+    }
+
+    .mine .bubble {
+      background: #258cff;
+    }
+
+    .send-area {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px;
+      background: #111827;
+      border-top: 1px solid #29334a;
+      display: flex;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    #messageInput {
+      margin: 0;
+      flex: 1;
+    }
+
+    #sendBtn {
+      width: 55px;
+      border-radius: 12px;
+      background: #258cff;
+      color: white;
+      font-size: 20px;
+    }
+
+    @media (max-width: 500px) {
+      .auth-box {
+        padding: 23px;
+      }
+
+      .search-row {
+        flex-direction: column;
+      }
+
+      .search-button {
+        height: 45px;
+      }
+
+      .friend-item {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section id="authScreen">
+    <div class="auth-box">
+
+      <div id="loginBox">
+        <div class="logo">Chat Wave</div>
+        <div class="subtitle">Connect privately</div>
+
+        <h2>Login</h2>
+
+        <input id="loginEmail" type="email" placeholder="Email" autocomplete="email">
+
+        <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password">
+
+        <button id="loginBtn" class="primary-btn">Login</button>
+
+        <button id="forgotBtn" class="forgot-btn">
+          Forgot Password?
+        </button>
+
+        <button id="showSignup" class="secondary-btn">
+          Create a new account
+        </button>
+      </div>
+
+      <div id="signupBox" class="hidden">
+        <div class="logo">Chat Wave</div>
+        <div class="subtitle">Create your account</div>
+
+        <h2>Sign Up</h2>
+
+        <input
+          id="signupUsername"
+          type="text"
+          placeholder="Username (8-30 letters/numbers)"
+          maxlength="30"
+          autocomplete="username"
+        >
+
+        <input
+          id="signupEmail"
+          type="email"
+          placeholder="Email"
+          autocomplete="email"
+        >
+
+        <input
+          id="signupPassword"
+          type="password"
+          placeholder="Password (8+ characters)"
+          autocomplete="new-password"
+        >
+
+        <button id="signupBtn" class="primary-btn">
+          Create Account
+        </button>
+
+        <button id="showLogin" class="secondary-btn">
+          Already have an account? Login
+        </button>
+      </div>
+
+      <div id="message"></div>
+    </div>
+  </section>
+
+  <section id="appScreen" class="hidden">
+
+    <header class="topbar">
+      <div class="brand">Chat Wave</div>
+
+      <button id="logoutBtn" class="logout">
+        Logout
+      </button>
+    </header>
+
+    <main class="home-container">
+
+      <div class="welcome">
+        <h2>Find Friends</h2>
+        <p>Search someone by their exact username.</p>
+      </div>
+
+      <div class="search-box">
+
+        <div class="search-row">
+          <input
+            id="searchUsername"
+            type="text"
+            placeholder="Enter username"
+          >
+
+          <button id="searchBtn" class="search-button">
+            Search
+          </button>
+        </div>
+
+        <div id="searchResult"></div>
+      </div>
+
+      <section id="friendsSection">
+
+        <div class="section-title">
+          <h2>Friends</h2>
+          <p>People you are chatting with</p>
+        </div>
+
+        <div id="friendsList">
+          <div class="empty-friends">
+            No chats yet.
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </section>
+
+  <section id="chatScreen" class="hidden">
+
+    <div class="chat-topbar">
+      <button id="backChat" class="back-btn">←</button>
+      <div id="chatUsername">Chat</div>
+    </div>
+
+    <div id="messages"></div>
+
+    <div class="send-area">
+
+      <input
+        id="messageInput"
+        type="text"
+        placeholder="Type a message..."
+        maxlength="2000"
+      >
+
+      <button id="sendBtn">➤</button>
+
+    </div>
+
+  </section>
+
+  <script type="module" src="app.js"></script>
+
+</body>
+</html>
